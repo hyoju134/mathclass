@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
+import ChatBot from "@/components/ChatBot";
 
 // 애플 스타일의 미니멀하고 세련된 자간이 설정된 Inter 폰트
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -33,6 +34,9 @@ export default function RootLayout({
           <footer className="w-full bg-white border-t border-emerald-100/50 py-12 text-center text-gray-400 text-sm">
             <p>© {new Date().getFullYear()} 효주T의 수학교실. All rights reserved.</p>
           </footer>
+
+          {/* OpenAI 효주T AI 튜터 챗봇 */}
+          <ChatBot />
         </AuthProvider>
       </body>
     </html>
