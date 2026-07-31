@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquareRound@1.0/nanumsquareround.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,5 +20,7 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-family: 'NanumSquareRound', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   }
 }
+

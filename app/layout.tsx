@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Header from "@/components/Header";
 import ChatBot from "@/components/ChatBot";
-
-// 애플 스타일의 미니멀하고 세련된 자간이 설정된 Inter 폰트
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "효주T의 수학교실",
@@ -20,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${inter.variable} font-sans antialiased bg-emerald-50/30 text-gray-900 flex flex-col min-h-screen tracking-tight`}>
+      <body className="font-sans antialiased bg-emerald-50/30 text-gray-900 flex flex-col min-h-screen tracking-tight">
         <AuthProvider>
           {/* 상단 헤더 */}
           <Header />
