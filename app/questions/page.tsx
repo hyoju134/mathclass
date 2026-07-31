@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Lock, Unlock, Send, MessageSquare, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Lock, Unlock, Send, MessageSquare, ShieldAlert, CheckCircle2, Trash2, ShieldCheck, UserPlus } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 interface Question {
   id: number;
@@ -13,30 +15,32 @@ interface Question {
   createdAt: string;
 }
 
-export default function QuestionsPage() {
-  // 초기 더미 질문 데이터
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      id: 1,
-      studentId: "20315",
-      name: "김수학",
-      title: "일차방정식 개념이 너무 헷갈려요 ㅠㅠ",
-      content: "X값을 구할 때 양변에 같은 수를 더하는 원리가 잘 이해가 안 가는데 다시 설명해주실 수 있나요?",
-      isPrivate: false,
-      createdAt: "2026.07.31 14:20",
-    },
-    {
-      id: 2,
-      studentId: "30102",
-      name: "이피타고라스",
-      title: "선생님 2학기 수행평가 관련 질문입니다.",
-      content: "비공개 질문 내용입니다. 선생님만 확인하실 수 있습니다.",
-      isPrivate: true,
-      createdAt: "2026.07.31 11:05",
-    },
-  ]);
+const INITIAL_QUESTIONS: Question[] = [
+  {
+    id: 1,
+    studentId: "20315",
+    name: "김수학",
+    title: "일차방정식 개념이 너무 헷갈려요 ㅠㅠ",
+    content: "X값을 구할 때 양변에 같은 수를 더하는 원리가 잘 이해가 안 가는데 다시 설명해주실 수 있나요?",
+    isPrivate: false,
+    createdAt: "2026.07.31 14:20",
+  },
+  {
+    id: 2,
+    studentId: "30102",
+    name: "이피타고라스",
+    title: "선생님 2학기 수행평가 관련 질문입니다.",
+    content: "비공개 질문 내용입니다. 선생님만 확인하실 수 있는 개인 질문입니다.",
+    isPrivate: true,
+    createdAt: "2026.07.31 11:05",
+  },
+];
 
-  // 폼 입력 상태
+export default function QuestionsPage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+
+  const [questions, setQuestions] = useState<Question[]>(INITIAL_QUESTIONS);
   const [studentId, setStudentId] = useState("");
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
@@ -44,7 +48,32 @@ export default function QuestionsPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
 
-  // 질문 제출 핸들러
+  // 질문 목록 불러오기 (LocalStorage)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("mathclass_questions");
+      if (saved) {
+        setQuestions(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  // 로그인 상태 변화 시 자동 입력
+  useEffect(() => {
+    if (user) {
+      if (user.role === "student") {
+        setStudentId(user.studentId || user.id);
+        setName(user.name);
+      } else if (user.role === "admin") {
+        setStudentId("효주T");
+        setName("효주T(관리자)");
+      }
+    }
+  }, [user]);
+
+  // 질문 등록
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -75,13 +104,25 @@ export default function QuestionsPage() {
       }),
     };
 
-    setQuestions([newQuestion, ...questions]);
-    
-    // 폼 초기화 및 완료 안내
+    const updated = [newQuestion, ...questions];
+    setQuestions(updated);
+    localStorage.setItem("mathclass_questions", JSON.stringify(updated));
+
+    // 폼 초기화 및 메시지
     setTitle("");
     setContent("");
     setSuccessMessage(true);
     setTimeout(() => setSuccessMessage(false), 3000);
+  };
+
+  // 질문 삭제 (관리자 전용)
+  const handleDelete = (id: number) => {
+    if (!isAdmin) return;
+    if (confirm("이 질문을 정말 삭제하시겠습니까?")) {
+      const updated = questions.filter((q) => q.id !== id);
+      setQuestions(updated);
+      localStorage.setItem("mathclass_questions", JSON.stringify(updated));
+    }
   };
 
   return (
@@ -94,6 +135,18 @@ export default function QuestionsPage() {
         <p className="text-gray-500 font-medium">
           수학 문제나 개념 중 궁금한 점을 자유롭게 질문해 보세요! (학번과 이름 필수)
         </p>
+
+        {/* 관리자 모드 안내 배지 */}
+        {isAdmin && (
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100/70 border border-emerald-300 text-emerald-900 text-xs font-bold rounded-full">
+            <ShieldCheck className="w-4 h-4 text-emerald-700" />
+            <span>관리자 로그인 상태: 모든 질문 열람 및 삭제 권한 적용 중</span>
+            <Link href="/login" className="underline hover:text-emerald-900 ml-2">
+              <UserPlus className="w-3.5 h-3.5 inline mr-1" />
+              학생 계정 관리
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* 질문 작성 폼 카드 */}
@@ -230,52 +283,77 @@ export default function QuestionsPage() {
         <h2 className="text-2xl font-bold text-gray-900 px-2">등록된 질문 목록 ({questions.length})</h2>
 
         <div className="space-y-4">
-          {questions.map((q) => (
-            <div
-              key={q.id}
-              className="bg-white/70 backdrop-blur-md border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all space-y-3"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  {/* 공개/비공개 뱃지 */}
-                  {q.isPrivate ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">
-                      <Lock className="w-3 h-3" />
-                      비공개
+          {questions.map((q) => {
+            // 본인 질문이거나 관리자이면 비공개 글 열람 허용
+            const canViewPrivate = isAdmin || (user?.studentId && user.studentId === q.studentId);
+
+            return (
+              <div
+                key={q.id}
+                className="bg-white/70 backdrop-blur-md border border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all space-y-3 relative group"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    {/* 공개/비공개 뱃지 */}
+                    {q.isPrivate ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">
+                        <Lock className="w-3 h-3" />
+                        비공개
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">
+                        <Unlock className="w-3 h-3" />
+                        공개
+                      </span>
+                    )}
+                    <h3 className="font-bold text-gray-900 text-lg">
+                      {q.isPrivate && !canViewPrivate ? "비공개 질문입니다." : q.title}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-400 font-medium">{q.createdAt}</span>
+                    
+                    {/* 관리자인 경우 삭제 버튼 제공 */}
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(q.id)}
+                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="관리자 권한: 질문 삭제"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* 내용 */}
+                <p className="text-sm text-gray-600 leading-relaxed pl-1">
+                  {q.isPrivate && !canViewPrivate ? (
+                    <span className="flex items-center gap-1 text-gray-400 italic">
+                      <ShieldAlert className="w-4 h-4 text-gray-400" />
+                      작성자와 선생님만 확인할 수 있는 비밀 질문입니다.
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full">
-                      <Unlock className="w-3 h-3" />
-                      공개
+                    q.content
+                  )}
+                </p>
+
+                {/* 작성자 정보 */}
+                <div className="pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400 font-medium">
+                  <span>
+                    작성자: {q.name} ({q.studentId})
+                  </span>
+                  {isAdmin && q.isPrivate && (
+                    <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      관리자 전용 열람 권한 작동 중
                     </span>
                   )}
-                  <h3 className="font-bold text-gray-900 text-lg">
-                    {q.isPrivate ? "비공개 질문입니다." : q.title}
-                  </h3>
                 </div>
-                <span className="text-xs text-gray-400 font-medium">{q.createdAt}</span>
               </div>
-
-              {/* 내용 */}
-              <p className="text-sm text-gray-600 leading-relaxed pl-1">
-                {q.isPrivate ? (
-                  <span className="flex items-center gap-1 text-gray-400 italic">
-                    <ShieldAlert className="w-4 h-4 text-gray-400" />
-                    작성자와 선생님만 확인할 수 있는 비밀 질문입니다.
-                  </span>
-                ) : (
-                  q.content
-                )}
-              </p>
-
-              {/* 작성자 정보 */}
-              <div className="pt-2 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400 font-medium">
-                <span>
-                  작성자: {q.name.charAt(0)}*{q.name.slice(2)} ({q.studentId})
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
