@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if ((trimmedId === "효주T" || trimmedId === "gywn1340") && trimmedPw === "jamong1013!") {
       const adminUser: User = {
         id: "효주T",
-        name: "효주T (관리자)",
+        name: "효주T(관리자)",
         role: "admin",
       };
       setUser(adminUser);

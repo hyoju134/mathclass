@@ -33,7 +33,7 @@ export default function Header() {
                 {user.role === "admin" ? (
                   <>
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>관리자 ({user.id})</span>
+                    <span>효주T(관리자)</span>
                   </>
                 ) : (
                   <>
