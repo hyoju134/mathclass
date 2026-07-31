@@ -8,8 +8,8 @@ export default function Home() {
       <div className="space-y-6 max-w-2xl">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-gray-900 leading-tight">
           함께하는 <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-            수학교실
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+            효주T의 수학교실
           </span>
         </h1>
         <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed">
@@ -21,7 +21,7 @@ export default function Home() {
 
       {/* 액션 버튼: 부드러운 둥근 모서리, 은은한 그림자 및 hover 애니메이션 */}
       <div className="flex items-center gap-4">
-        <button className="group flex items-center justify-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl hover:bg-gray-800 transition-all duration-300">
+        <button className="group flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold shadow-lg shadow-emerald-600/20 hover:shadow-xl hover:bg-emerald-700 transition-all duration-300">
           시작하기
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
@@ -34,7 +34,7 @@ export default function Home() {
           { title: "직관적인 풀이", desc: "복잡한 수식을 아름답고 직관적인 UI로 한눈에 이해할 수 있습니다." },
           { title: "실시간 피드백", desc: "문제를 푸는 즉시 정확한 해설과 피드백을 제공받아 실력을 키웁니다." }
         ].map((item, idx) => (
-          <div key={idx} className="bg-white/60 backdrop-blur-md border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <div key={idx} className="bg-white/70 backdrop-blur-md border border-emerald-100/60 p-8 rounded-2xl shadow-sm hover:shadow-md hover:border-emerald-200 transition-all">
             <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
             <p className="text-gray-500 leading-relaxed">{item.desc}</p>
           </div>

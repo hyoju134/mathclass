@@ -7,7 +7,7 @@ import { Calculator } from "lucide-react";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "수학교실 - 함께하는 수학교실",
+  title: "효주T의 수학교실",
   description: "미니멀하고 세련된 디자인의 수학 학습 플랫폼",
 };
 
@@ -18,21 +18,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${inter.variable} font-sans antialiased bg-gray-50 text-gray-900 flex flex-col min-h-screen tracking-tight`}>
+      <body className={`${inter.variable} font-sans antialiased bg-emerald-50/30 text-gray-900 flex flex-col min-h-screen tracking-tight`}>
         {/* 상단 헤더: Glassmorphism 적용, 넓은 여백과 부드러운 그림자 */}
-        <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-gray-100 shadow-sm transition-all">
+        <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-emerald-100/50 shadow-sm transition-all">
           <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
             {/* 로고 영역 */}
-            <div className="flex items-center gap-2 text-blue-600 font-semibold text-xl tracking-tight">
+            <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xl tracking-tight">
               <Calculator className="w-6 h-6" />
-              <span>수학교실</span>
+              <span>효주T의 수학교실</span>
             </div>
             
             {/* 네비게이션 공간 (Placeholder) */}
             <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-600">
-              <a href="#" className="hover:text-blue-600 transition-colors">학습하기</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">문제은행</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">질문게시판</a>
+              <a href="#" className="hover:text-emerald-600 transition-colors">학습하기</a>
+              <a href="#" className="hover:text-emerald-600 transition-colors">문제은행</a>
+              <a href="#" className="hover:text-emerald-600 transition-colors">질문게시판</a>
             </nav>
           </div>
         </header>
@@ -43,8 +43,8 @@ export default function RootLayout({
         </main>
 
         {/* 하단 푸터: 심플하고 여백이 넉넉한 스타일 */}
-        <footer className="w-full bg-white border-t border-gray-100 py-12 text-center text-gray-400 text-sm">
-          <p>© {new Date().getFullYear()} 수학교실. All rights reserved.</p>
+        <footer className="w-full bg-white border-t border-emerald-100/50 py-12 text-center text-gray-400 text-sm">
+          <p>© {new Date().getFullYear()} 효주T의 수학교실. All rights reserved.</p>
         </footer>
       </body>
     </html>
