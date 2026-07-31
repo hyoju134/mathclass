@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lock, Unlock, Send, MessageSquare, ShieldAlert, CheckCircle2, Trash2, ShieldCheck, UserPlus } from "lucide-react";
+import { Lock, Unlock, Send, MessageSquare, ShieldAlert, CheckCircle2, Trash2, ShieldCheck, UserPlus, LogIn } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 
@@ -60,7 +60,7 @@ export default function QuestionsPage() {
     }
   }, []);
 
-  // 로그인 상태 변화 시 자동 입력
+  // 로그인 상태 변화 시 작성자 정보 고정 (로그인한 계정 자동 매핑)
   useEffect(() => {
     if (user) {
       if (user.role === "student") {
@@ -70,6 +70,9 @@ export default function QuestionsPage() {
         setStudentId("효주T");
         setName("효주T(관리자)");
       }
+    } else {
+      setStudentId("");
+      setName("");
     }
   }, [user]);
 
@@ -77,8 +80,8 @@ export default function QuestionsPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!studentId.trim() || !name.trim()) {
-      alert("학번과 이름을 반드시 입력해주세요.");
+    if (!user) {
+      alert("질문을 작성하려면 반드시 로그인이 필요합니다.");
       return;
     }
 
@@ -132,8 +135,8 @@ export default function QuestionsPage() {
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
           효주T에게 <span className="text-emerald-600">질문하기</span>
         </h1>
-        <p className="text-gray-500 font-medium">
-          수학 문제나 개념 중 궁금한 점을 자유롭게 질문해 보세요! (학번과 이름 필수)
+        <p className="text-gray-500 font-medium text-sm md:text-base">
+          수학 문제나 개념 중 궁금한 점을 자유롭게 질문해 보세요! (로그인 정보로 자동 작성)
         </p>
 
         {/* 관리자 모드 안내 배지 */}
@@ -149,134 +152,153 @@ export default function QuestionsPage() {
         )}
       </div>
 
-      {/* 질문 작성 폼 카드 */}
-      <div className="bg-white/80 backdrop-blur-md border border-emerald-100 p-8 rounded-3xl shadow-sm space-y-6">
-        <div className="flex items-center gap-2 border-b border-gray-100 pb-4">
-          <MessageSquare className="w-5 h-5 text-emerald-600" />
-          <h2 className="text-xl font-bold text-gray-900">새 질문 작성</h2>
-        </div>
-
-        {successMessage && (
-          <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-sm font-medium animate-in fade-in">
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-            <span>질문이 성공적으로 등록되었습니다! 선생님이 확인 후 답변해 드립니다.</span>
+      {/* 로그인 안 한 경우 질문 작성 안내 카드 */}
+      {!user ? (
+        <div className="bg-white/80 backdrop-blur-md border border-emerald-100 p-10 rounded-3xl shadow-sm text-center space-y-5">
+          <div className="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+            <Lock className="w-7 h-7" />
           </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* 학번 & 이름 (필수 입력 항목) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                학번 <span className="text-emerald-600">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="예: 20315 (2학년 3반 15번)"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">
-                이름 <span className="text-emerald-600">*</span>
-              </label>
-              <input
-                type="text"
-                placeholder="예: 홍길동"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm"
-              />
-            </div>
+          <div className="space-y-1.5">
+            <h2 className="text-2xl font-bold text-gray-900">로그인 후 질문을 작성하실 수 있습니다</h2>
+            <p className="text-xs text-gray-500">
+              모든 서비스 활동은 로그인한 학번과 이름을 바탕으로 수행됩니다.
+            </p>
           </div>
-
-          {/* 질문 제목 */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">
-              질문 제목 <span className="text-emerald-600">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="질문의 요약을 입력하세요"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm"
-            />
-          </div>
-
-          {/* 질문 내용 */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">
-              질문 내용 <span className="text-emerald-600">*</span>
-            </label>
-            <textarea
-              rows={4}
-              placeholder="궁금한 단원, 문제 번호, 이해가 안 가는 내용을 자세히 적어주세요."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm resize-none"
-            />
-          </div>
-
-          {/* 공개 / 비공개 설정 (라디오 버튼) */}
-          <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-700">공개 설정</label>
-            <div className="flex gap-4">
-              <label
-                className={`flex-1 flex items-center justify-center gap-2 p-3.5 rounded-2xl border cursor-pointer transition-all text-sm font-medium ${
-                  !isPrivate
-                    ? "border-emerald-500 bg-emerald-50/50 text-emerald-700 font-semibold"
-                    : "border-gray-200 bg-gray-50/30 text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="privacy"
-                  checked={!isPrivate}
-                  onChange={() => setIsPrivate(false)}
-                  className="sr-only"
-                />
-                <Unlock className="w-4 h-4 text-emerald-600" />
-                <span>공개 질문 (모두 볼 수 있음)</span>
-              </label>
-
-              <label
-                className={`flex-1 flex items-center justify-center gap-2 p-3.5 rounded-2xl border cursor-pointer transition-all text-sm font-medium ${
-                  isPrivate
-                    ? "border-emerald-500 bg-emerald-50/50 text-emerald-700 font-semibold"
-                    : "border-gray-200 bg-gray-50/30 text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="privacy"
-                  checked={isPrivate}
-                  onChange={() => setIsPrivate(true)}
-                  className="sr-only"
-                />
-                <Lock className="w-4 h-4 text-gray-500" />
-                <span>비공개 질문 (선생님만 봄)</span>
-              </label>
-            </div>
-          </div>
-
-          {/* 제출 버튼 */}
-          <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 rounded-2xl font-semibold shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-xl transition-all duration-200"
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all text-xs"
           >
-            <Send className="w-4 h-4" />
-            <span>질문 등록하기</span>
-          </button>
-        </form>
-      </div>
+            <LogIn className="w-4 h-4" />
+            <span>로그인하러 가기</span>
+          </Link>
+        </div>
+      ) : (
+        /* 질문 작성 폼 카드 (로그인 한 사용자) */
+        <div className="bg-white/80 backdrop-blur-md border border-emerald-100 p-8 rounded-3xl shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-emerald-600" />
+              <h2 className="text-xl font-bold text-gray-900">새 질문 작성</h2>
+            </div>
+            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              작성자: {name} ({studentId})
+            </span>
+          </div>
+
+          {successMessage && (
+            <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-sm font-medium animate-in fade-in">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+              <span>질문이 성공적으로 등록되었습니다! 선생님이 확인 후 답변해 드립니다.</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* 학번 & 이름 (로그인 계정으로 고정) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">학번</label>
+                <input
+                  type="text"
+                  value={studentId}
+                  readOnly
+                  className="w-full px-4 py-3 bg-gray-100/80 border border-gray-200 rounded-2xl text-sm font-medium text-gray-600 cursor-not-allowed"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700">이름</label>
+                <input
+                  type="text"
+                  value={name}
+                  readOnly
+                  className="w-full px-4 py-3 bg-gray-100/80 border border-gray-200 rounded-2xl text-sm font-medium text-gray-600 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            {/* 질문 제목 */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                질문 제목 <span className="text-emerald-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="질문의 요약을 입력하세요"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm"
+              />
+            </div>
+
+            {/* 질문 내용 */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                질문 내용 <span className="text-emerald-600">*</span>
+              </label>
+              <textarea
+                rows={4}
+                placeholder="궁금한 단원, 문제 번호, 이해가 안 가는 내용을 자세히 적어주세요."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all text-sm resize-none"
+              />
+            </div>
+
+            {/* 공개 / 비공개 설정 (라디오 버튼) */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">공개 설정</label>
+              <div className="flex gap-4">
+                <label
+                  className={`flex-1 flex items-center justify-center gap-2 p-3.5 rounded-2xl border cursor-pointer transition-all text-sm font-medium ${
+                    !isPrivate
+                      ? "border-emerald-500 bg-emerald-50/50 text-emerald-700 font-semibold"
+                      : "border-gray-200 bg-gray-50/30 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="privacy"
+                    checked={!isPrivate}
+                    onChange={() => setIsPrivate(false)}
+                    className="sr-only"
+                  />
+                  <Unlock className="w-4 h-4 text-emerald-600" />
+                  <span>공개 질문 (모두 볼 수 있음)</span>
+                </label>
+
+                <label
+                  className={`flex-1 flex items-center justify-center gap-2 p-3.5 rounded-2xl border cursor-pointer transition-all text-sm font-medium ${
+                    isPrivate
+                      ? "border-emerald-500 bg-emerald-50/50 text-emerald-700 font-semibold"
+                      : "border-gray-200 bg-gray-50/30 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="privacy"
+                    checked={isPrivate}
+                    onChange={() => setIsPrivate(true)}
+                    className="sr-only"
+                  />
+                  <Lock className="w-4 h-4 text-gray-500" />
+                  <span>비공개 질문 (선생님만 봄)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* 제출 버튼 */}
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 rounded-2xl font-semibold shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-xl transition-all duration-200"
+            >
+              <Send className="w-4 h-4" />
+              <span>질문 등록하기</span>
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* 질문 목록 섹션 */}
       <div className="space-y-6 pt-6">
@@ -284,7 +306,6 @@ export default function QuestionsPage() {
 
         <div className="space-y-4">
           {questions.map((q) => {
-            // 본인 질문이거나 관리자이면 비공개 글 열람 허용
             const canViewPrivate = isAdmin || (user?.studentId && user.studentId === q.studentId);
 
             return (
