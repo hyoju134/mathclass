@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { Calculator } from "lucide-react";
 
@@ -23,17 +24,17 @@ export default function RootLayout({
         <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-emerald-100/50 shadow-sm transition-all">
           <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between relative">
             {/* 로고 영역 */}
-            <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xl tracking-tight z-10">
+            <Link href="/" className="flex items-center gap-2 text-emerald-600 font-semibold text-xl tracking-tight z-10 hover:opacity-90 transition-opacity">
               <Calculator className="w-6 h-6" />
               <span>효주T의 수학교실</span>
-            </div>
+            </Link>
             
             {/* 네비게이션 공간 (중앙 정렬) */}
             <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 absolute left-1/2 -translate-x-1/2">
               <a href="#" className="hover:text-emerald-600 transition-colors">중1</a>
               <a href="#" className="hover:text-emerald-600 transition-colors">중2</a>
               <a href="#" className="hover:text-emerald-600 transition-colors">중3</a>
-              <a href="#" className="hover:text-emerald-600 transition-colors">질문게시판</a>
+              <Link href="/questions" className="hover:text-emerald-600 transition-colors">질문게시판</Link>
             </nav>
           </div>
         </header>
