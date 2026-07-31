@@ -21,17 +21,18 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased bg-emerald-50/30 text-gray-900 flex flex-col min-h-screen tracking-tight`}>
         {/* 상단 헤더: Glassmorphism 적용, 넓은 여백과 부드러운 그림자 */}
         <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-emerald-100/50 shadow-sm transition-all">
-          <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between relative">
             {/* 로고 영역 */}
-            <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xl tracking-tight">
+            <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xl tracking-tight z-10">
               <Calculator className="w-6 h-6" />
               <span>효주T의 수학교실</span>
             </div>
             
-            {/* 네비게이션 공간 (Placeholder) */}
-            <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-600">
-              <a href="#" className="hover:text-emerald-600 transition-colors">학습하기</a>
-              <a href="#" className="hover:text-emerald-600 transition-colors">문제은행</a>
+            {/* 네비게이션 공간 (중앙 정렬) */}
+            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 absolute left-1/2 -translate-x-1/2">
+              <a href="#" className="hover:text-emerald-600 transition-colors">중1</a>
+              <a href="#" className="hover:text-emerald-600 transition-colors">중2</a>
+              <a href="#" className="hover:text-emerald-600 transition-colors">중3</a>
               <a href="#" className="hover:text-emerald-600 transition-colors">질문게시판</a>
             </nav>
           </div>

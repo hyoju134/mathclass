@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-12 animate-in fade-in duration-1000 slide-in-from-bottom-4">
@@ -9,7 +7,7 @@ export default function Home() {
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-gray-900 leading-tight">
           함께하는 <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-            효주T의 수학교실
+            수학교실
           </span>
         </h1>
         <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed">
@@ -17,14 +15,6 @@ export default function Home() {
           <br className="hidden md:block" />
           당신의 학습 경험을 완전히 새롭게 디자인했습니다.
         </p>
-      </div>
-
-      {/* 액션 버튼: 부드러운 둥근 모서리, 은은한 그림자 및 hover 애니메이션 */}
-      <div className="flex items-center gap-4">
-        <button className="group flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold shadow-lg shadow-emerald-600/20 hover:shadow-xl hover:bg-emerald-700 transition-all duration-300">
-          시작하기
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </button>
       </div>
       
       {/* 서브 콘텐츠 카드 영역 (Glassmorphism + Apple 스타일 여백) */}
