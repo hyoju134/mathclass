@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface User {
-  id: string; // 학번 또는 admin id ('gywn1340')
+  id: string; // 학번 또는 admin id ('효주T')
   name: string;
   role: "admin" | "student";
   studentId?: string;
@@ -21,6 +21,7 @@ interface AuthContextType {
   login: (id: string, password: string) => { success: boolean; message: string };
   logout: () => void;
   addStudent: (student: StudentAccount) => void;
+  addStudentsBulk: (newStudents: StudentAccount[]) => number;
   deleteStudent: (studentId: string) => void;
 }
 
@@ -61,10 +62,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const trimmedId = id.trim();
     const trimmedPw = password.trim();
 
-    // 1. 관리자 로그인 확인 (아이디: gywn1340, 비번: jamong1013!)
-    if (trimmedId === "gywn1340" && trimmedPw === "jamong1013!") {
+    // 1. 관리자 로그인 확인 (아이디: 효주T 또는 gywn1340 호환, 비번: jamong1013!)
+    if ((trimmedId === "효주T" || trimmedId === "gywn1340") && trimmedPw === "jamong1013!") {
       const adminUser: User = {
-        id: "gywn1340",
+        id: "효주T",
         name: "효주T (관리자)",
         role: "admin",
       };
@@ -93,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return {
       success: false,
-      message: "등록되지 않은 계정입니다. (관리자인 경우 아이디/비번을 확인하시고, 학생인 경우 선생님께 계정 등록을 요청하세요.)",
+      message: "등록되지 않은 계정입니다. (관리자 아이디: '효주T', 학생인 경우 선생님께 계정 등록을 요청하세요.)",
     };
   };
 
@@ -103,11 +104,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("mathclass_user");
   };
 
-  // 학생 등록
+  // 학생 단일 등록
   const addStudent = (newStudent: StudentAccount) => {
     const updated = [...students.filter((s) => s.studentId !== newStudent.studentId), newStudent];
     setStudents(updated);
     localStorage.setItem("mathclass_students", JSON.stringify(updated));
+  };
+
+  // 엑셀 등 괄호/대량 등록
+  const addStudentsBulk = (newStudentsList: StudentAccount[]): number => {
+    const studentMap = new Map<string, StudentAccount>();
+    // 기존 데이터 세팅
+    students.forEach((s) => studentMap.set(s.studentId, s));
+    // 신규 데이터 덮어쓰기/추가
+    let addedCount = 0;
+    newStudentsList.forEach((s) => {
+      if (s.studentId && s.name && s.password) {
+        studentMap.set(s.studentId, s);
+        addedCount++;
+      }
+    });
+
+    const updated = Array.from(studentMap.values());
+    setStudents(updated);
+    localStorage.setItem("mathclass_students", JSON.stringify(updated));
+    return addedCount;
   };
 
   // 학생 삭제
@@ -118,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, students, login, logout, addStudent, deleteStudent }}>
+    <AuthContext.Provider value={{ user, students, login, logout, addStudent, addStudentsBulk, deleteStudent }}>
       {isLoaded ? children : <div className="min-h-screen bg-emerald-50/30" />}
     </AuthContext.Provider>
   );

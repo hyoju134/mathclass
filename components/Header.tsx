@@ -18,7 +18,7 @@ export default function Header() {
         
         {/* 네비게이션 공간 (중앙 정렬) */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 absolute left-1/2 -translate-x-1/2">
-          <Link href="/quiz" className="hover:text-emerald-600 transition-colors font-semibold text-emerald-600 flex items-center gap-1">⚡ 암산 퀴즈</Link>
+          <Link href="/quiz" className="hover:text-emerald-600 transition-colors font-semibold text-emerald-600 flex items-center gap-1">퀴즈</Link>
           <a href="#" className="hover:text-emerald-600 transition-colors">중1</a>
           <a href="#" className="hover:text-emerald-600 transition-colors">중2</a>
           <a href="#" className="hover:text-emerald-600 transition-colors">중3</a>
