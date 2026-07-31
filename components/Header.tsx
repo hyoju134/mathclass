@@ -19,9 +19,9 @@ export default function Header() {
         {/* 네비게이션 공간 (중앙 정렬) */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 absolute left-1/2 -translate-x-1/2">
           <Link href="/quiz" className="hover:text-emerald-600 transition-colors font-semibold text-emerald-600 flex items-center gap-1">퀴즈</Link>
-          <a href="#" className="hover:text-emerald-600 transition-colors">중1</a>
+          <Link href="/grade1" className="hover:text-emerald-600 transition-colors">중1</Link>
           <Link href="/grade2" className="hover:text-emerald-600 transition-colors">중2</Link>
-          <a href="#" className="hover:text-emerald-600 transition-colors">중3</a>
+          <Link href="/grade3" className="hover:text-emerald-600 transition-colors">중3</Link>
           <Link href="/questions" className="hover:text-emerald-600 transition-colors">질문게시판</Link>
         </nav>
 
@@ -29,19 +29,21 @@ export default function Header() {
         <div className="flex items-center gap-3 z-10">
           {user ? (
             <div className="flex items-center gap-3">
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-full">
-                {user.role === "admin" ? (
-                  <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>효주T(관리자)</span>
-                  </>
-                ) : (
-                  <>
-                    <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{user.name} ({user.studentId})</span>
-                  </>
-                )}
-              </span>
+              {user.role === "admin" ? (
+                <Link
+                  href="/admin"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-100/80 border border-emerald-300 text-emerald-900 hover:bg-emerald-200/80 text-xs font-bold rounded-full transition-all shadow-2xs"
+                  title="관리자 센터로 이동"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>효주T(관리자)</span>
+                </Link>
+              ) : (
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold rounded-full">
+                  <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{user.name} ({user.studentId})</span>
+                </span>
+              )}
 
               <button
                 onClick={logout}
