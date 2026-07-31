@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Zap } from "lucide-react";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-12 animate-in fade-in duration-1000 slide-in-from-bottom-4">
@@ -15,6 +18,16 @@ export default function Home() {
           <br className="hidden md:block" />
           당신의 학습 경험을 완전히 새롭게 디자인했습니다.
         </p>
+
+        <div className="pt-4 flex justify-center">
+          <Link
+            href="/quiz"
+            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 hover:scale-105 transition-all text-base"
+          >
+            <Zap className="w-5 h-5 fill-current" />
+            <span>스피드 암산 퀴즈 왕중왕전 도전하기</span>
+          </Link>
+        </div>
       </div>
       
       {/* 서브 콘텐츠 카드 영역 (Glassmorphism + Apple 스타일 여백) */}
