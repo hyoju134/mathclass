@@ -85,3 +85,48 @@ export async function getLeaderboard(): Promise<QuizScoreRecord[]> {
     return [];
   }
 }
+
+/**
+ * 개별 퀴즈 점수 삭제 (관리자용)
+ */
+export async function deleteQuizScore(id?: number, studentId?: string, score?: number) {
+  if (supabase && id) {
+    try {
+      await supabase.from("quiz_scores").delete().eq("id", id);
+    } catch (e) {
+      console.error("Supabase delete score error:", e);
+    }
+  }
+
+  // LocalStorage 내 항목도 삭제
+  try {
+    const localData: QuizScoreRecord[] = JSON.parse(localStorage.getItem("mathclass_quiz_scores") || "[]");
+    const updated = localData.filter((item) => {
+      if (id && item.id === id) return false;
+      if (studentId && score !== undefined && item.student_id === studentId && item.score === score) return false;
+      return true;
+    });
+    localStorage.setItem("mathclass_quiz_scores", JSON.stringify(updated));
+  } catch (e) {
+    console.error("LocalStorage delete score error:", e);
+  }
+}
+
+/**
+ *전체 퀴즈 랭킹 초기화 (관리자용)
+ */
+export async function resetAllQuizScores() {
+  if (supabase) {
+    try {
+      await supabase.from("quiz_scores").delete().neq("id", 0);
+    } catch (e) {
+      console.error("Supabase reset all error:", e);
+    }
+  }
+
+  try {
+    localStorage.removeItem("mathclass_quiz_scores");
+  } catch (e) {
+    console.error("LocalStorage reset all error:", e);
+  }
+}

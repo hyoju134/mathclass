@@ -23,6 +23,8 @@ interface AuthContextType {
   addStudent: (student: StudentAccount) => void;
   addStudentsBulk: (newStudents: StudentAccount[]) => number;
   deleteStudent: (studentId: string) => void;
+  resetStudentPassword: (studentId: string, newPassword?: string) => void;
+  clearAllStudents: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -114,9 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 엑셀 등 괄호/대량 등록
   const addStudentsBulk = (newStudentsList: StudentAccount[]): number => {
     const studentMap = new Map<string, StudentAccount>();
-    // 기존 데이터 세팅
     students.forEach((s) => studentMap.set(s.studentId, s));
-    // 신규 데이터 덮어쓰기/추가
     let addedCount = 0;
     newStudentsList.forEach((s) => {
       if (s.studentId && s.name && s.password) {
@@ -131,15 +131,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return addedCount;
   };
 
-  // 학생 삭제
+  // 학생 계정 삭제
   const deleteStudent = (studentId: string) => {
     const updated = students.filter((s) => s.studentId !== studentId);
     setStudents(updated);
     localStorage.setItem("mathclass_students", JSON.stringify(updated));
   };
 
+  // 학생 비밀번호 초기화
+  const resetStudentPassword = (studentId: string, newPassword = "1234") => {
+    const updated = students.map((s) => {
+      if (s.studentId === studentId) {
+        return { ...s, password: newPassword };
+      }
+      return s;
+    });
+    setStudents(updated);
+    localStorage.setItem("mathclass_students", JSON.stringify(updated));
+  };
+
+  // 전체 학생 목록 초기화
+  const clearAllStudents = () => {
+    setStudents([]);
+    localStorage.removeItem("mathclass_students");
+  };
+
   return (
-    <AuthContext.Provider value={{ user, students, login, logout, addStudent, addStudentsBulk, deleteStudent }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        students,
+        login,
+        logout,
+        addStudent,
+        addStudentsBulk,
+        deleteStudent,
+        resetStudentPassword,
+        clearAllStudents,
+      }}
+    >
       {isLoaded ? children : <div className="min-h-screen bg-emerald-50/30" />}
     </AuthContext.Provider>
   );
